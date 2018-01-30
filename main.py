@@ -15,8 +15,10 @@ dweets = {}
 def get_last_dweet(thing):
     return json.dumps(dweets[thing][-1])
 
-def get_last_dweet(thing):
-    return dweets[thing][-1]
+def get_last_dweets(thing, size=100):
+    size = min(size, len(dweets[thing]))
+    print(size)
+    return dweets[thing][-size:]
 
 def save_dweet(thing, content):
     dweet = Dweet(thing, content)
@@ -48,12 +50,27 @@ class GetDweet(tornado.web.RequestHandler):
     def get(self, thing):
         try:
             dweet = get_last_dweet(thing)
-            print(dweet)
             response = {
               "this": "succeeded",
               "by": "getting",
               "the": "dweets",
               "with": [dweet.__dict__()]
+            }
+            self.write(response)
+        except:
+            self.set_status(404)
+            self.finish("No dweet found.")
+
+class GetDweets(tornado.web.RequestHandler):
+    def get(self, thing):
+        try:
+            print("tab")
+            dweets = get_last_dweets(thing)
+            response = {
+              "this": "succeeded",
+              "by": "getting",
+              "the": "dweets",
+              "with": [dweet.__dict__() for dweet in dweets]
             }
             self.write(response)
         except:
@@ -66,6 +83,7 @@ def main():
     application = tornado.web.Application([
         (r"/dweet/for/([^/]+)", PostDweet),
         (r"/get/latest/dweet/for/([^/]+)", GetDweet),
+        (r"/get/dweets/for/([^/]+)", GetDweets),
     ])
     http_server = tornado.httpserver.HTTPServer(application)
     http_server.listen(options.port)
