@@ -13,7 +13,7 @@ define("port", default=80, type=int)
 dweets = {}
 
 def get_last_dweet(thing):
-    return json.dumps(dweets[thing][-1])
+    return dweets[thing][-1]
 
 def get_last_dweets(thing, size=100):
     size = min(size, len(dweets[thing]))
