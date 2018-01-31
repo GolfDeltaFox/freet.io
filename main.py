@@ -77,10 +77,15 @@ class GetDweets(tornado.web.RequestHandler):
             self.set_status(404)
             self.finish("No dweet found.")
 
+class GetPing(tornado.web.RequestHandler):
+    def get(self):
+        self.write("Pong.")
+
 
 def main():
     tornado.options.parse_command_line()
     application = tornado.web.Application([
+        (r"/ping", GetPing),
         (r"/dweet/for/([^/]+)", PostDweet),
         (r"/get/latest/dweet/for/([^/]+)", GetDweet),
         (r"/get/dweets/for/([^/]+)", GetDweets),
