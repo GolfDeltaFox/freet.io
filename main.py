@@ -4,7 +4,7 @@ import tornado.options
 import tornado.web
 import json
 from model.dweet import Dweet
-
+from utils.base_handler import BaseHandler
 
 from tornado.options import define, options
 
@@ -29,7 +29,9 @@ def save_dweet(thing, content):
     return dweet
 
 
-class PostDweet(tornado.web.RequestHandler):
+
+
+class PostDweet(BaseHandler):
     def post(self, thing):
         try:
             content = tornado.escape.json_decode(self.request.body)
@@ -46,7 +48,7 @@ class PostDweet(tornado.web.RequestHandler):
             self.set_status(400)
             self.finish("Bad JSON.")
 
-class GetDweet(tornado.web.RequestHandler):
+class GetDweet(BaseHandler):
     def get(self, thing):
         try:
             dweet = get_last_dweet(thing)
@@ -61,7 +63,7 @@ class GetDweet(tornado.web.RequestHandler):
             self.set_status(404)
             self.finish("No dweet found.")
 
-class GetDweets(tornado.web.RequestHandler):
+class GetDweets(BaseHandler):
     def get(self, thing):
         try:
             print("tab")
@@ -77,7 +79,7 @@ class GetDweets(tornado.web.RequestHandler):
             self.set_status(404)
             self.finish("No dweet found.")
 
-class GetPing(tornado.web.RequestHandler):
+class GetPing(BaseHandler):
     def get(self):
         self.write("Pong.")
 
